@@ -35,3 +35,19 @@ Route.post("login", async ({ auth, request, response }) => {
     return response.badRequest("Invalid credentials");
   }
 });
+
+Route.get("dashboard", async ({ auth }) => {
+  await auth.use("api").authenticate();
+  //console.log(auth.use("api").user!);
+  return {
+    user: auth.use("api").user,
+    data: "dashboard",
+  };
+});
+
+Route.post("/logout", async ({ auth }) => {
+  await auth.use("api").revoke();
+  return {
+    revoked: true,
+  };
+});
