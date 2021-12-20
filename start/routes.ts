@@ -53,3 +53,9 @@ Route.get("dashboard", async ({ auth, bouncer }) => {
     data: "dashboard",
   };
 });
+
+Route.resource("teams", "TeamsController")
+  .middleware({
+    // "*": ["auth"],
+  })
+  .apiOnly();
