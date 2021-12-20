@@ -1,4 +1,4 @@
-import { BaseCommand, args } from "@adonisjs/core/build/standalone";
+import { BaseCommand, args, flags } from "@adonisjs/core/build/standalone";
 
 export default class CreateUser extends BaseCommand {
   /**
@@ -11,6 +11,9 @@ export default class CreateUser extends BaseCommand {
 
   @args.string({ description: "User password" })
   public password: string;
+
+  @flags.boolean({ description: "Is Administrator?" })
+  public isAdmin: boolean;
 
   /**
    * Command description is displayed in the "help" output
@@ -39,6 +42,7 @@ export default class CreateUser extends BaseCommand {
     await User.create({
       email: this.email,
       password: this.password,
+      isAdmin: this.isAdmin,
     });
 
     this.logger.info("User created!");
