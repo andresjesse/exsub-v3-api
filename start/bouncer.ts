@@ -30,8 +30,8 @@ import User from "App/Models/User";
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer.define("manageUsers", (user: User) => {
-  return user.isAdmin;
+export const { actions } = Bouncer.define("manageTeams", (user: User) => {
+  return Boolean(user.isAdmin);
 });
 
 /*
