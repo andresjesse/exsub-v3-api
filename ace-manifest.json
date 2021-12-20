@@ -1,5 +1,32 @@
 {
   "commands": {
+    "create:user": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/CreateUser",
+      "commandName": "create:user",
+      "description": "Create an User from CLI",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "email",
+          "name": "email",
+          "required": true,
+          "description": "User email (unique)"
+        },
+        {
+          "type": "string",
+          "propertyName": "password",
+          "name": "password",
+          "required": true,
+          "description": "User password"
+        }
+      ],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",
