@@ -42,7 +42,7 @@ export default class CreateUser extends BaseCommand {
     await User.create({
       email: this.email,
       password: this.password,
-      isAdmin: this.isAdmin,
+      isAdmin: this.isAdmin || false,
     });
 
     this.logger.info("User created!");
