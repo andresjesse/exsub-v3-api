@@ -1,5 +1,11 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  column,
+  ManyToMany,
+  manyToMany,
+} from "@ioc:Adonis/Lucid/Orm";
+import User from "./User";
 
 export default class Team extends BaseModel {
   @column({ isPrimary: true })
@@ -13,4 +19,7 @@ export default class Team extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
+  @manyToMany(() => User)
+  public users: ManyToMany<typeof User>;
 }

@@ -2,6 +2,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema } from "@ioc:Adonis/Core/Validator";
 
 import Team from "App/Models/Team";
+import User from "App/Models/User";
 
 const teamSchema = schema.create({
   description: schema.string({ trim: true }),
@@ -40,5 +41,23 @@ export default class TeamsController {
     const team = await Team.findOrFail(params.id);
     await team.delete();
     return team;
+  }
+
+  public async attachUser({ bouncer, params }) {
+    await bouncer.authorize("manageTeams");
+
+    const team = await Team.findOrFail(params.team_id);
+    const user = await User.findOrFail(params.user_id);
+
+    await team.related("users").attach([user.id]);
+  }
+
+  public async detachUser({ bouncer, params }) {
+    await bouncer.authorize("manageTeams");
+
+    const team = await Team.findOrFail(params.team_id);
+    const user = await User.findOrFail(params.user_id);
+
+    await team.related("users").detach([user.id]);
   }
 }

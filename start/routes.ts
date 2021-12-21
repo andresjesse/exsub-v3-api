@@ -60,6 +60,16 @@ Route.resource("teams", "TeamsController")
   })
   .apiOnly();
 
+Route.post(
+  "teams/:team_id/attach_user/:user_id",
+  "TeamsController.attachUser"
+).middleware("auth");
+
+Route.post(
+  "teams/:team_id/detach_user/:user_id",
+  "TeamsController.detachUser"
+).middleware("auth");
+
 Route.resource("users", "UsersController")
   .middleware({
     "*": ["auth"],
