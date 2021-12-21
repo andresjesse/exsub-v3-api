@@ -8,22 +8,26 @@ const teamSchema = schema.create({
 });
 
 export default class TeamsController {
-  public async index({}: HttpContextContract) {
+  public async index({ bouncer }: HttpContextContract) {
+    await bouncer.authorize("manageTeams");
     return await Team.all();
   }
 
-  public async store({ request, response }: HttpContextContract) {
+  public async store({ bouncer, request, response }: HttpContextContract) {
+    await bouncer.authorize("manageTeams");
     const payload = await request.validate({ schema: teamSchema });
     const team = await Team.create(payload);
     response.status(201);
     return team;
   }
 
-  public async show({ params }: HttpContextContract) {
+  public async show({ bouncer, params }: HttpContextContract) {
+    await bouncer.authorize("manageTeams");
     return await Team.findOrFail(params.id);
   }
 
-  public async update({ request, params }: HttpContextContract) {
+  public async update({ bouncer, request, params }: HttpContextContract) {
+    await bouncer.authorize("manageTeams");
     const team = await Team.findOrFail(params.id);
     const payload = await request.validate({ schema: teamSchema });
     team.description = payload.description;
@@ -31,7 +35,8 @@ export default class TeamsController {
     return team;
   }
 
-  public async destroy({ params }: HttpContextContract) {
+  public async destroy({ bouncer, params }: HttpContextContract) {
+    await bouncer.authorize("manageTeams");
     const team = await Team.findOrFail(params.id);
     await team.delete();
     return team;
