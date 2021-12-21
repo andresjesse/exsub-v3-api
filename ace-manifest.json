@@ -1,13 +1,13 @@
 {
   "commands": {
-    "create:user": {
+    "create:admin": {
       "settings": {
         "loadApp": true,
         "stayAlive": false
       },
-      "commandPath": "./commands/CreateUser",
-      "commandName": "create:user",
-      "description": "Create an User from CLI",
+      "commandPath": "./commands/CreateAdmin",
+      "commandName": "create:admin",
+      "description": "Create an Admin from CLI",
       "args": [
         {
           "type": "string",
@@ -22,17 +22,17 @@
           "name": "password",
           "required": true,
           "description": "User password"
+        },
+        {
+          "type": "string",
+          "propertyName": "name",
+          "name": "name",
+          "required": true,
+          "description": "User Name"
         }
       ],
       "aliases": [],
-      "flags": [
-        {
-          "name": "is-admin",
-          "propertyName": "isAdmin",
-          "type": "boolean",
-          "description": "Is Administrator?"
-        }
-      ]
+      "flags": []
     },
     "dump:rcfile": {
       "settings": {},

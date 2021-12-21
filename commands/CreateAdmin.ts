@@ -4,7 +4,7 @@ export default class CreateUser extends BaseCommand {
   /**
    * Command name is used to run the command
    */
-  public static commandName = "create:user";
+  public static commandName = "create:admin";
 
   @args.string({ description: "User email (unique)" })
   public email: string;
@@ -12,13 +12,16 @@ export default class CreateUser extends BaseCommand {
   @args.string({ description: "User password" })
   public password: string;
 
-  @flags.boolean({ description: "Is Administrator?" })
-  public isAdmin: boolean;
+  @args.string({ description: "User Name" })
+  public name: string;
+
+  // @flags.boolean({ description: "Is Administrator?" })
+  // public isAdmin: boolean;
 
   /**
    * Command description is displayed in the "help" output
    */
-  public static description = "Create an User from CLI";
+  public static description = "Create an Admin from CLI";
 
   public static settings = {
     /**
@@ -42,9 +45,11 @@ export default class CreateUser extends BaseCommand {
     await User.create({
       email: this.email,
       password: this.password,
-      isAdmin: this.isAdmin || false,
+      name: this.name,
+      isAdmin: true,
+      // isAdmin: this.isAdmin || false,
     });
 
-    this.logger.info("User created!");
+    this.logger.info("Admin created!");
   }
 }

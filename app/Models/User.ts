@@ -16,6 +16,12 @@ export default class User extends BaseModel {
   public isAdmin: boolean;
 
   @column()
+  public name: string;
+
+  @column()
+  public ra?: string;
+
+  @column()
   public rememberMeToken?: string;
 
   @column.dateTime({ autoCreate: true })
