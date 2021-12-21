@@ -59,3 +59,9 @@ Route.resource("teams", "TeamsController")
     "*": ["auth"],
   })
   .apiOnly();
+
+Route.resource("users", "UsersController")
+  .middleware({
+    "*": ["auth"],
+  })
+  .apiOnly();

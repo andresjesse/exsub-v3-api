@@ -32,6 +32,8 @@ import User from "App/Models/User";
 */
 export const { actions } = Bouncer.define("manageTeams", (user: User) => {
   return Boolean(user.isAdmin);
+}).define("manageUsers", (user: User) => {
+  return Boolean(user.isAdmin);
 });
 
 /*
