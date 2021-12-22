@@ -1,10 +1,19 @@
+import Database from "@ioc:Adonis/Lucid/Database";
 import test from "japa";
 import supertest from "supertest";
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`;
 
-test.group("login", () => {
+test.group("login", (group) => {
   let token = null;
+
+  group.before(async () => {
+    await Database.beginGlobalTransaction(); // enclose test suite
+  });
+
+  group.after(async () => {
+    await Database.rollbackGlobalTransaction(); // rollback to clean changes
+  });
 
   test("ensure admin login works", async (assert) => {
     const { body } = await supertest(BASE_URL)

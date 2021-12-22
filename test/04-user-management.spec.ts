@@ -4,7 +4,7 @@ import supertest from "supertest";
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`;
 
-test.group("team management by admin", (group) => {
+test.group("user management by admin", (group) => {
   let token = null;
   let id = 0;
 
@@ -22,53 +22,57 @@ test.group("team management by admin", (group) => {
     await Database.rollbackGlobalTransaction(); // rollback to clean changes
   });
 
-  test("ensure admin can create a team", async (assert) => {
-    const { body } = await supertest(BASE_URL)
-      .get("/teams")
+  test("ensure admin can create an user", async (assert) => {
+    const createUserResponse = await supertest(BASE_URL)
+      .post("/users")
       .set("Authorization", "bearer " + token)
-      .expect(200);
-
-    assert.equal(body.length, 0);
-
-    const createResponse = await supertest(BASE_URL)
-      .post("/teams")
-      .set("Authorization", "bearer " + token)
-      .send({ description: "Sample Team" })
+      .send({
+        email: "nonadmin@test.com",
+        password: "123",
+        isAdmin: false,
+        name: "Non Admin",
+      })
       .expect(201);
 
-    id = createResponse.body.id;
+    assert.isTrue(createUserResponse.body.id > 0);
 
-    assert.isTrue(id > 0);
+    id = createUserResponse.body.id;
   });
 
-  test("ensure admin can update a team", async (assert) => {
+  test("ensure admin can update an user", async (assert) => {
+    await supertest(BASE_URL)
+      .patch("/users/" + id)
+      .set("Authorization", "bearer " + token)
+      .send({ name: "New Name", ra: "A999" })
+      .expect(200);
+
     const updatedResponse = await supertest(BASE_URL)
-      .patch("/teams/" + id)
+      .get("/users/" + id)
       .set("Authorization", "bearer " + token)
-      .send({ description: "New Description" })
       .expect(200);
 
-    assert.equal(updatedResponse.body.description, "New Description");
+    assert.equal(updatedResponse.body.name, "New Name");
+    assert.equal(updatedResponse.body.ra, "A999");
   });
 
-  test("ensure admin can delete a team", async () => {
+  test("ensure admin can delete an user", async () => {
     await supertest(BASE_URL)
-      .get("/teams/" + id)
+      .get("/users/" + id)
       .set("Authorization", "bearer " + token)
       .expect(200);
 
     await supertest(BASE_URL)
-      .delete("/teams/" + id)
+      .delete("/users/" + id)
       .set("Authorization", "bearer " + token)
       .expect(200);
 
     await supertest(BASE_URL)
-      .get("/teams/" + id)
+      .get("/users/" + id)
       .set("Authorization", "bearer " + token)
       .expect(404);
   });
 
-  test("ensure non-admin can't manage teams", async () => {
+  test("ensure non-admin can't manage users", async () => {
     const createUserResponse = await supertest(BASE_URL)
       .post("/users")
       .set("Authorization", "bearer " + token)
@@ -88,14 +92,19 @@ test.group("team management by admin", (group) => {
     let nonAdminToken = loginResponse.body.token;
 
     await supertest(BASE_URL)
-      .post("/teams")
+      .post("/users")
       .set("Authorization", "bearer " + nonAdminToken)
-      .send({ description: "Sample Team" })
+      .send({
+        email: "nonadmin@test.com",
+        password: "123",
+        isAdmin: false,
+        name: "Non Admin",
+      })
       .expect(403);
 
-    await supertest(BASE_URL)
-      .delete("/users/" + createUserResponse.body.id)
-      .set("Authorization", "bearer " + token)
-      .expect(200);
+    // await supertest(BASE_URL)
+    //   .delete("/users/" + createUserResponse.body.id)
+    //   .set("Authorization", "bearer " + token)
+    //   .expect(200);
   });
 });
