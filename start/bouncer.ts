@@ -6,6 +6,7 @@
  */
 
 import Bouncer from "@ioc:Adonis/Addons/Bouncer";
+import Submission from "App/Models/Submission";
 import User from "App/Models/User";
 
 /*
@@ -32,9 +33,13 @@ import User from "App/Models/User";
 */
 export const { actions } = Bouncer.define("manageTeams", (user: User) => {
   return Boolean(user.isAdmin);
-}).define("manageUsers", (user: User) => {
-  return Boolean(user.isAdmin);
-});
+})
+  .define("manageUsers", (user: User) => {
+    return Boolean(user.isAdmin);
+  })
+  .define("manageSubmissions", (user: User, targetId: number) => {
+    return Boolean(user.isAdmin) || targetId === user.id;
+  });
 
 /*
 |--------------------------------------------------------------------------

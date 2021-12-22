@@ -48,3 +48,9 @@ Route.resource("users", "UsersController")
     "*": ["auth"],
   })
   .apiOnly();
+
+Route.resource("users.submissions", "SubmissionsController")
+  .middleware({
+    "*": ["auth"],
+  })
+  .apiOnly();
