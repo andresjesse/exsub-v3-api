@@ -25,7 +25,9 @@ export default class TeamsController {
 
   public async show({ bouncer, params }: HttpContextContract) {
     await bouncer.authorize("manageTeams");
-    return await Team.findOrFail(params.id);
+    const team = await Team.findOrFail(params.id);
+    await team.load("users");
+    return team;
   }
 
   public async update({ bouncer, request, params }: HttpContextContract) {
