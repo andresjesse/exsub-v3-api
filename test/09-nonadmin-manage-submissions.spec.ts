@@ -47,8 +47,9 @@ test.group("submissions management by admin", (group) => {
 
     nonAdminToken = loginResponse.body.token;
 
+    //create a new submission
     const { body } = await supertest(BASE_URL)
-      .post("/users/" + 1 + "/submissions")
+      .post("/users/" + user_id + "/submissions")
       .set("Authorization", "bearer " + nonAdminToken)
       .send({
         filePath: "L1/E01.c",
@@ -88,17 +89,17 @@ test.group("submissions management by admin", (group) => {
 
   test("ensure non-admin can delete his own submission", async () => {
     await supertest(BASE_URL)
-      .get("/users/" + 1 + "/submissions/" + id)
+      .get("/users/" + user_id + "/submissions/" + id)
       .set("Authorization", "bearer " + nonAdminToken)
       .expect(200);
 
     await supertest(BASE_URL)
-      .delete("/users/" + 1 + "/submissions/" + id)
+      .delete("/users/" + user_id + "/submissions/" + id)
       .set("Authorization", "bearer " + nonAdminToken)
       .expect(200);
 
     await supertest(BASE_URL)
-      .get("/users/" + 1 + "/submissions/" + id)
+      .get("/users/" + user_id + "/submissions/" + id)
       .set("Authorization", "bearer " + nonAdminToken)
       .expect(404);
   });

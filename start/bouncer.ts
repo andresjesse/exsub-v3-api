@@ -38,7 +38,7 @@ export const { actions } = Bouncer.define("manageTeams", (user: User) => {
     return Boolean(user.isAdmin);
   })
   .define("manageSubmissions", (user: User, targetId: number) => {
-    return Boolean(user.isAdmin) || targetId === user.id;
+    return Boolean(user.isAdmin) || targetId == user.id;
   });
 
 /*
