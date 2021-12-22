@@ -73,7 +73,7 @@ test.group("user management by admin", (group) => {
   });
 
   test("ensure non-admin can't manage users", async () => {
-    const createUserResponse = await supertest(BASE_URL)
+    await supertest(BASE_URL)
       .post("/users")
       .set("Authorization", "bearer " + token)
       .send({
