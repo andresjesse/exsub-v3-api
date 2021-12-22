@@ -101,10 +101,5 @@ test.group("user management by admin", (group) => {
         name: "Non Admin",
       })
       .expect(403);
-
-    // await supertest(BASE_URL)
-    //   .delete("/users/" + createUserResponse.body.id)
-    //   .set("Authorization", "bearer " + token)
-    //   .expect(200);
   });
 });
