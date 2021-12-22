@@ -50,6 +50,6 @@ export default class CreateUser extends BaseCommand {
       // isAdmin: this.isAdmin || false,
     });
 
-    this.logger.info("Admin created!");
+    this.logger.info("admin created: " + this.email);
   }
 }
