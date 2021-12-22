@@ -1,5 +1,6 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema } from "@ioc:Adonis/Core/Validator";
+import Database from "@ioc:Adonis/Lucid/Database";
 
 import Team from "App/Models/Team";
 import User from "App/Models/User";
@@ -38,8 +39,17 @@ export default class TeamsController {
 
   public async destroy({ bouncer, params }: HttpContextContract) {
     await bouncer.authorize("manageTeams");
+
     const team = await Team.findOrFail(params.id);
-    await team.delete();
+
+    await Database.transaction(async (trx) => {
+      team.useTransaction(trx);
+      await team.delete();
+
+      //remove dead m2m rel on pivot table
+      await trx.from("team_user").where("team_id", team.id).del();
+    });
+
     return team;
   }
 

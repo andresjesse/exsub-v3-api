@@ -1,5 +1,6 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
+import Database from "@ioc:Adonis/Lucid/Database";
 import User from "App/Models/User";
 
 const userSchema = schema.create({
@@ -54,7 +55,15 @@ export default class UsersController {
     await bouncer.authorize("manageUsers");
 
     const obj = await User.findOrFail(params.id);
-    await obj.delete();
+
+    await Database.transaction(async (trx) => {
+      obj.useTransaction(trx);
+      await obj.delete();
+
+      //remove dead m2m rel on pivot table
+      await trx.from("team_user").where("user_id", obj.id).del();
+    });
+
     return obj;
   }
 }
