@@ -43,17 +43,6 @@ Route.post("/logout", async ({ auth }) => {
   };
 });
 
-Route.get("dashboard", async ({ auth, bouncer }) => {
-  await auth.use("api").authenticate();
-  await bouncer.authorize("manageTeams");
-
-  //console.log(auth.use("api").user!);
-  return {
-    user: auth.use("api").user,
-    data: "dashboard",
-  };
-});
-
 Route.resource("teams", "TeamsController")
   .middleware({
     "*": ["auth"],
