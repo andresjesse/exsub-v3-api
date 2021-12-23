@@ -1,4 +1,5 @@
 import Database from "@ioc:Adonis/Lucid/Database";
+import Drive from "@ioc:Adonis/Core/Drive";
 import test from "japa";
 import supertest from "supertest";
 
@@ -18,10 +19,12 @@ test.group("submissions management by admin", (group) => {
     token = body.token;
 
     await Database.beginGlobalTransaction(); // enclose test suite
+    Drive.fake(); // Fake default disk
   });
 
   group.after(async () => {
     await Database.rollbackGlobalTransaction(); // rollback to clean changes
+    Drive.restore(); // Restore original Drive
   });
 
   test("ensure non-admin user can create a submission", async (assert) => {
@@ -56,6 +59,7 @@ test.group("submissions management by admin", (group) => {
         exercise: "E01",
         exerciseList: "L1",
         programmingLang: "C",
+        sourceCode: "[source code]",
       })
       .expect(201);
 
@@ -73,6 +77,7 @@ test.group("submissions management by admin", (group) => {
         exercise: "E01",
         exerciseList: "L1",
         programmingLang: "C",
+        sourceCode: "[source code]",
       })
       .expect(201);
 
@@ -83,6 +88,7 @@ test.group("submissions management by admin", (group) => {
       .send({
         status: "correct",
         programmingLang: "python",
+        sourceCode: "[source code]",
       })
       .expect(403);
   });
