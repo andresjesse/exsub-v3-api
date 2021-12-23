@@ -13,7 +13,7 @@ export default class Submissions extends BaseSchema {
         .references("users.id")
         .onDelete("CASCADE"); // delete submission when user is deleted
 
-      table.string("file_path").notNullable();
+      table.string("file_path").notNullable().unique();
       table.string("exercise").notNullable();
       table.string("exercise_list").notNullable();
       table.string("status");

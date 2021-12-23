@@ -55,7 +55,6 @@ test.group("submissions management by admin", (group) => {
       .post("/users/" + user_id + "/submissions")
       .set("Authorization", "bearer " + nonAdminToken)
       .send({
-        filePath: "L1/E01.c",
         exercise: "E01",
         exerciseList: "L1",
         programmingLang: "C",
@@ -69,12 +68,11 @@ test.group("submissions management by admin", (group) => {
 
   test("ensure non-admin can't update a submission from other user", async () => {
     //create a submission from admin
-    await supertest(BASE_URL)
+    const responseAdmin = await supertest(BASE_URL)
       .post("/users/" + 1 + "/submissions")
       .set("Authorization", "bearer " + token)
       .send({
-        filePath: "L1/E01.c",
-        exercise: "E01",
+        exercise: "E02",
         exerciseList: "L1",
         programmingLang: "C",
         sourceCode: "[source code]",
@@ -83,7 +81,7 @@ test.group("submissions management by admin", (group) => {
 
     //try to patch admin's submission
     await supertest(BASE_URL)
-      .patch("/users/" + 1 + "/submissions/" + id)
+      .patch("/users/" + 1 + "/submissions/" + responseAdmin.body.id)
       .set("Authorization", "bearer " + nonAdminToken)
       .send({
         status: "correct",

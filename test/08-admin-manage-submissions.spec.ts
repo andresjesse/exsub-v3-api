@@ -30,7 +30,6 @@ test.group("submissions management by admin", (group) => {
       .post("/users/" + 1 + "/submissions")
       .set("Authorization", "bearer " + token)
       .send({
-        filePath: "L1/E01.c",
         exercise: "E01",
         exerciseList: "L1",
         programmingLang: "C",
@@ -58,14 +57,12 @@ test.group("submissions management by admin", (group) => {
       .patch("/users/" + 1 + "/submissions/" + id)
       .set("Authorization", "bearer " + token)
       .send({
-        filePath: "error",
         exercise: "error",
         exerciselist: "error",
         sourceCode: "[source code]",
       })
       .expect(200);
 
-    assert.equal(body.file_path, "L1/E01.c");
     assert.equal(body.exercise, "E01");
     assert.equal(body.exercise_list, "L1");
   });
