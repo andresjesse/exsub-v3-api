@@ -9,8 +9,13 @@ import User from "App/Models/User";
 import { SubmissionFileExtensions, SubmissionStatus } from "Config/exsub";
 
 // Helper Function
-const generateFilePath = ({ exerciseList, exercise, programmingLang }) => {
-  return `${exerciseList.toUpperCase()}/${exercise.toUpperCase()}.${
+const generateFilePath = ({
+  userId,
+  exerciseList,
+  exercise,
+  programmingLang,
+}) => {
+  return `${userId}/${exerciseList.toUpperCase()}/${exercise.toUpperCase()}.${
     SubmissionFileExtensions[programmingLang.toUpperCase()]
   }`;
 };
@@ -51,7 +56,7 @@ export default class SubmissionsController {
 
     // generate additional props
     const generatedProps = {
-      filePath: generateFilePath(payload),
+      filePath: generateFilePath({ userId: user.id, ...payload }),
       status: SubmissionStatus.COMPILATION_PENDING,
       originalfileMd5: await MD5(
         sourceCode.replace(/(\r\n|\n|\r)/gm, "") //remove spaces and line breaks

@@ -6,3 +6,4 @@ coverage
 .env
 tmp
 uploads
+EXERCISE_LISTS
