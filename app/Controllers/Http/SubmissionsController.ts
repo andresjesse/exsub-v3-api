@@ -2,11 +2,11 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Submission from "App/Models/Submission";
 import { schema } from "@ioc:Adonis/Core/Validator";
 import Drive from "@ioc:Adonis/Core/Drive";
-import Event from "@ioc:Adonis/Core/Event";
 import MD5 from "crypto-js/md5";
 
 import User from "App/Models/User";
 import { SubmissionFileExtensions, SubmissionStatus } from "Config/exsub";
+import evaluateSubmission from "App/Services/submission_evaluator";
 
 // Helper Function
 const generateFilePath = ({
@@ -70,9 +70,9 @@ export default class SubmissionsController {
 
     // save disk file, emit event for exercise evaluator
     await Drive.put(submission.filePath, sourceCode);
-    Event.emit("saved:source_code", submission);
+    const evaluatedSubmission = await evaluateSubmission(submission);
     response.status(201);
-    return submission;
+    return evaluatedSubmission;
   }
 
   public async show({ bouncer, params }: HttpContextContract) {
@@ -117,8 +117,7 @@ export default class SubmissionsController {
     // save database and disk file, emit event for exercise evaluator
     await submission.save();
     await Drive.put(submission.filePath, sourceCode);
-    Event.emit("saved:source_code", submission);
-    return submission;
+    return await evaluateSubmission(submission);
   }
 
   public async destroy({ bouncer, params }: HttpContextContract) {
