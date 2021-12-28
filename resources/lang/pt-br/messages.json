@@ -1,0 +1,8 @@
+{
+  "COMPILATION_PENDING": "compilação pendente",
+  "COMPILATION_ERROR": "erro de compilação: {error}",
+  "CORRECT": "submissão correta, aprovada em todos os testes",
+  "INCORRECT": "submissão incorreta, as saídas esperadas não conferem",
+  "INCORRECT_INCLUDE": "include não permitido: {include}",
+  "INVALID_FUNCTION_CALL": "chamada de função inválida: system(\"...\")"
+}

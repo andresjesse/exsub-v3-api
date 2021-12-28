@@ -11,3 +11,5 @@ export enum SubmissionStatus {
 }
 
 export const INCLUDES_WHITELIST = ["stdio.h", "math.h", "string.h"];
+
+export const USER_LANGUAGE = "pt-br";

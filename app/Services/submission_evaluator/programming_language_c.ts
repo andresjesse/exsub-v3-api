@@ -1,9 +1,13 @@
 import Drive from "@ioc:Adonis/Core/Drive";
 import Submission from "App/Models/Submission";
-import { INCLUDES_WHITELIST, SubmissionStatus } from "Config/exsub";
+import {
+  INCLUDES_WHITELIST,
+  SubmissionStatus,
+  USER_LANGUAGE,
+} from "Config/exsub";
 import Application from "@ioc:Adonis/Core/Application";
-
 import { execSync, execFileSync } from "child_process";
+import I18n from "@ioc:Adonis/Addons/I18n";
 
 interface TestResult {
   result: boolean;
@@ -20,6 +24,9 @@ export const evaluate_c = async (submission: Submission) => {
   const mainFilePath = Application.tmpPath(
     `compilation/${submission.userId}_${submission.exerciseList}_${submission.exercise}`
   );
+
+  // ensure no previous executable is present
+  Drive.delete(mainFilePath);
 
   const results: TestResult[] = [];
 
@@ -57,24 +64,28 @@ export const evaluate_c = async (submission: Submission) => {
         student_out: resultExecution.toString(),
       });
     }
+
+    if (results.every((result) => result.result)) {
+      submission.status = SubmissionStatus.CORRECT;
+      submission.statusMessage =
+        I18n.locale(USER_LANGUAGE).formatMessage("messages.CORRECT");
+      await submission.save();
+    } else {
+      submission.status = SubmissionStatus.INCORRECT;
+      submission.statusMessage =
+        I18n.locale(USER_LANGUAGE).formatMessage("messages.INCORRECT");
+      await submission.save();
+    }
   } catch (err) {
     submission.status = SubmissionStatus.COMPILATION_ERROR;
-    submission.statusMessage = err
-      .toString()
-      .replace(Application.tmpPath(), "");
+    const errorStr = err.message?.toString().replace(Application.tmpPath(), "");
+    submission.statusMessage = I18n.locale(USER_LANGUAGE).formatMessage(
+      "messages.COMPILATION_ERROR",
+      { error: errorStr }
+    );
     await submission.save();
   } finally {
     Drive.delete(mainFilePath);
-  }
-
-  if (results.every((result) => result.result)) {
-    submission.status = SubmissionStatus.CORRECT;
-    submission.statusMessage = "all tests passed";
-    await submission.save();
-  } else {
-    submission.status = SubmissionStatus.INCORRECT;
-    submission.statusMessage = JSON.stringify(results);
-    await submission.save();
   }
 
   console.log(submission);
@@ -116,14 +127,24 @@ const validateSource = async (submission: Submission) => {
 
   for (const match of sourceCode.matchAll(includesRegex)) {
     if (!INCLUDES_WHITELIST.includes(match[1]))
-      throw new Error("invalid include: " + match[1]);
+      throw new Error(
+        I18n.locale(USER_LANGUAGE).formatMessage("messages.INCORRECT_INCLUDE", {
+          include: match[1],
+        })
+      );
   }
 
   for (const match of sourceCode.matchAll(includesQuotRegex)) {
     if (!INCLUDES_WHITELIST.includes(match[1]))
-      throw new Error("invalid include: " + match[1]);
+      throw new Error(
+        I18n.locale(USER_LANGUAGE).formatMessage("messages.INCORRECT_INCLUDE", {
+          include: match[1],
+        })
+      );
   }
 
   if (sourceCode.match(systemRegex))
-    throw new Error('invalid function call: system("...")');
+    throw new Error(
+      I18n.locale(USER_LANGUAGE).formatMessage("messages.INVALID_FUNCTION_CALL")
+    );
 };
