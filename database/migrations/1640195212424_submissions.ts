@@ -17,6 +17,7 @@ export default class Submissions extends BaseSchema {
       table.string("exercise").notNullable();
       table.string("exercise_list").notNullable();
       table.string("status");
+      table.string("status_message").nullable();
       table.string("programming_lang").notNullable();
       table.string("originalfile_md5");
 

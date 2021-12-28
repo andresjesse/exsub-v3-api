@@ -15,7 +15,7 @@ const generateFilePath = ({
   exercise,
   programmingLang,
 }) => {
-  return `${userId}/${exerciseList.toUpperCase()}/${exercise.toUpperCase()}.${
+  return `STUDENTS/${userId}/${exerciseList.toUpperCase()}/${exercise.toUpperCase()}.${
     SubmissionFileExtensions[programmingLang.toUpperCase()]
   }`;
 };

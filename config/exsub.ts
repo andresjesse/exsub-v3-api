@@ -9,3 +9,5 @@ export enum SubmissionStatus {
   CORRECT = "CORRECT",
   INCORRECT = "INCORRECT",
 }
+
+export const INCLUDES_WHITELIST = ["stdio.h", "math.h", "string.h"];

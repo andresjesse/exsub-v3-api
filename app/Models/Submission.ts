@@ -22,6 +22,9 @@ export default class Submission extends BaseModel {
   public status: string;
 
   @column()
+  public statusMessage?: string;
+
+  @column()
   public programmingLang: string;
 
   @column()
