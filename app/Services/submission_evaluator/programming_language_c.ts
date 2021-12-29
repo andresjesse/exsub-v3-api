@@ -71,9 +71,24 @@ export const evaluate_c = async (submission: Submission) => {
         I18n.locale(USER_LANGUAGE).formatMessage("messages.CORRECT");
       await submission.save();
     } else {
+      const readable_results = results
+        .map((r) =>
+          I18n.locale(USER_LANGUAGE).formatMessage(
+            "messages.INCORRECT_PRESENTATION",
+            {
+              student_out: r.student_out,
+              expected_out: r.expected_out,
+              result: r.result ? "correto" : "incorreto",
+            }
+          )
+        )
+        .join("\n");
+
       submission.status = SubmissionStatus.INCORRECT;
-      submission.statusMessage =
-        I18n.locale(USER_LANGUAGE).formatMessage("messages.INCORRECT");
+      submission.statusMessage = I18n.locale(USER_LANGUAGE).formatMessage(
+        "messages.INCORRECT",
+        { readable_results }
+      );
       await submission.save();
     }
   } catch (err) {
@@ -87,8 +102,6 @@ export const evaluate_c = async (submission: Submission) => {
   } finally {
     Drive.delete(mainFilePath);
   }
-
-  console.log(submission);
 
   return submission;
 };
@@ -111,6 +124,13 @@ const getTestCases = async (submission: Submission) => {
     testIndex++;
   }
 
+  if (testCases.length == 0)
+    throw new Error(
+      I18n.locale(USER_LANGUAGE).formatMessage("messages.NO_TEST_CASES", {
+        id: submission.filePath,
+      })
+    );
+
   return testCases;
 };
 
@@ -124,6 +144,7 @@ const validateSource = async (submission: Submission) => {
   const includesRegex = /#\s*include\s*<\s*([^>]*)\s*>/gi;
   const includesQuotRegex = /#\s*include\s*\"\s*([^\"]*)\s*\"/gi;
   const systemRegex = /system\s*([^)]*)/gi;
+  const forkRegex = /fork\s*([^)]*)/gi;
 
   for (const match of sourceCode.matchAll(includesRegex)) {
     if (!INCLUDES_WHITELIST.includes(match[1]))
@@ -145,6 +166,17 @@ const validateSource = async (submission: Submission) => {
 
   if (sourceCode.match(systemRegex))
     throw new Error(
-      I18n.locale(USER_LANGUAGE).formatMessage("messages.INVALID_FUNCTION_CALL")
+      I18n.locale(USER_LANGUAGE).formatMessage(
+        "messages.INVALID_FUNCTION_CALL",
+        { func_name: "system" }
+      )
+    );
+
+  if (sourceCode.match(forkRegex))
+    throw new Error(
+      I18n.locale(USER_LANGUAGE).formatMessage(
+        "messages.INVALID_FUNCTION_CALL",
+        { func_name: "fork" }
+      )
     );
 };

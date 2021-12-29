@@ -46,7 +46,7 @@ test.group("submissions management by admin", (group) => {
       .patch("/users/" + 1 + "/submissions/" + id)
       .set("Authorization", "bearer " + token)
       .send({
-        programmingLang: "python",
+        programmingLang: "C",
         sourceCode: "[source code]",
       })
       .expect(200);

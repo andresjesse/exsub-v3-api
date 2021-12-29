@@ -2,7 +2,9 @@
   "COMPILATION_PENDING": "compilação pendente",
   "COMPILATION_ERROR": "erro de compilação: {error}",
   "CORRECT": "submissão correta, aprovada em todos os testes",
-  "INCORRECT": "submissão incorreta, as saídas esperadas não conferem",
+  "INCORRECT": "submissão incorreta, as saídas esperadas não conferem\n {readable_results}",
+  "INCORRECT_PRESENTATION": "sua saída:\n\t{student_out}\nsaída esperada:\n\t{expected_out}\n\tresultado: {result}",
   "INCORRECT_INCLUDE": "include não permitido: {include}",
-  "INVALID_FUNCTION_CALL": "chamada de função inválida: system(\"...\")"
+  "INVALID_FUNCTION_CALL": "chamada de função inválida: {func_name}(\"...\")",
+  "NO_TEST_CASES": "nenhum caso de teste cadastrado para a submissão {id}"
 }
